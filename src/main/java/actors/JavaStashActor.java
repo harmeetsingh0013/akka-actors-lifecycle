@@ -4,6 +4,7 @@ import akka.actor.AbstractActorWithStash;
 import akka.japi.pf.ReceiveBuilder;
 import messages.Connect;
 import messages.Message;
+import scala.Option;
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
 
@@ -34,6 +35,15 @@ public class JavaStashActor extends AbstractActorWithStash {
                     online = true;
                     unstash();
                 }).build();
+    }
+
+    /*
+    Note that the Stash trait must be mixed into (a subclass of) the Actor trait before any trait/class that overrides the preRestart callback.
+    This means it's not possible to write Actor with MyActor with Stash if MyActor overrides preRestart.
+     */
+    @Override
+    public void preRestart(Throwable reason, Option<Object> message) {
+        System.out.println("Successfully override preRestart");
     }
 
     private void processMessage(Message msg) {
